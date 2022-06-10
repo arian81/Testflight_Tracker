@@ -1,25 +1,25 @@
 import requests
 from bs4 import BeautifulSoup
-import json
 import re
 from urllib import parse
 import discord
 from discord.ext import commands
 from colors import Color as color
+from dotenv import load_dotenv
+from os import getenv
 
 
 class Tracker:
     def __init__(self, session):
+        load_dotenv()
         self.data = session
         self.url = self.data["url"]
-        self.telegram_bot_token = self.data["telegram_bot_token"]
+        self.telegram_bot_token = getenv("TELEGRAM_BOT_TOKEN")
         self.discord_id = self.data["discord_id"]
-        # OTgyMDg5MDEyMzMwMjMzODU3.G_yHnN.GJdeFcua5Fhpz-etvHby5ib7kup1RqYPIhu_B0
-        self.discord_bot_token = self.data["discord_bot_token"]
+        self.discord_bot_token = getenv("DISCORD_BOT_TOKEN")
         self.telegram_usr_id = self.data["telegram_usr_id"]
         self.simplepush_key = self.data["simplepush_key"]    # fj7BvL
-        # av28dsrg8xaj1yfyz49rzv8xj1sgf7
-        self.pushover_token = self.data["pushover_token"]
+        self.pushover_token = getenv("PUSHOVER_TOKEN")
         # uszvd8xhs424xphpwhz3i7n6u6tkp7
         self.pushover_usr_id = self.data["pushover_usr_id"]
         self.msg = None
@@ -39,6 +39,7 @@ class Tracker:
         else:
             print(f"{color.GREEN}Beta is Available!{color.END}")
             self.msg = f"Beta for {title} is availabe!"
+            #add sender function
 
     def send_telegram(self):
         bot_url = f"https://api.telegram.org/bot{self.telegram_bot_token}/sendPhoto"
