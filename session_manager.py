@@ -40,7 +40,7 @@ def setup_session():
         elif i == "pushover":
             get_pushover(session)
         else:
-            print("Platform not supported")
+            print(f"{color.YELLOW}Platform not supported!{color.END}")
     return session
 def edit_session(session):
     while to_edit != "exit":

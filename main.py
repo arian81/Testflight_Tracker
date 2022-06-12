@@ -50,8 +50,13 @@ if __name__ == "__main__":
         session = setup_session()
     
     clear()
-    #TODO: create the object
+
+    tracker = Tracker(session)
+    tracker.track()
+
+    #TODO:
     #save the data to file
+    # figure out the time for app runnin
 
     
 

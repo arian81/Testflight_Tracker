@@ -22,24 +22,38 @@ class Tracker:
         self.pushover_token = getenv("PUSHOVER_TOKEN")
         # uszvd8xhs424xphpwhz3i7n6u6tkp7
         self.pushover_usr_id = self.data["pushover_usr_id"]
+        self.send_platform = self.data["send_platform"]
         self.msg = None
         self.logo = None
 
     def track(self):
-        site = requests.get(self.url)
-        soup = BeautifulSoup(site.content, "html.parser")
-        title = re.search(
-            "Join the (.*) beta - TestFlight - Apple", soup.title.text).group(1)
-        self.logo = re.search("background-image: url\((.*)\);",
-                              soup.find("div", class_="app-icon")["style"]).group(1)
-        beta_status = soup.find("div", class_="beta-status").span.text
-        if beta_status == "This beta is full.":
-            print(
-                f"{color.RED}Sadly the beta program is still full. Patience is a virtue so wait a bit longer.{color.END}")
-        else:
-            print(f"{color.GREEN}Beta is Available!{color.END}")
-            self.msg = f"Beta for {title} is availabe!"
-            #add sender function
+        while True:
+            site = requests.get(self.url)
+            soup = BeautifulSoup(site.content, "html.parser")
+            title = re.search(
+                "Join the (.*) beta - TestFlight - Apple", soup.title.text).group(1)
+            self.logo = re.search("background-image: url\((.*)\);",
+                                soup.find("div", class_="app-icon")["style"]).group(1)
+            beta_status = soup.find("div", class_="beta-status").span.text
+            if beta_status == "This beta is full.":
+                print(
+                    f"{color.RED}Sadly the beta program is still full. Patience is a virtue so wait a bit longer.{color.END}")
+            else:
+                print(f"{color.GREEN}Beta is Available!{color.END}")
+                self.msg = f"Beta for {title} is availabe!"
+                self.sender()
+    def sender(self):
+        for i in self.send_platform:
+            if i == "telegram":
+                self.send_telegram()
+            elif i == "discord":
+                self.send_discord()
+            elif i == "simplepush":
+                self.send_simplepush()
+            elif i == "pushover":
+                self.send_pushover()
+            else:
+                print(f"{color.YELLOW}Platform not supported!{color.END}")
 
     def send_telegram(self):
         bot_url = f"https://api.telegram.org/bot{self.telegram_bot_token}/sendPhoto"
